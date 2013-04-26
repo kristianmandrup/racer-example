@@ -5,25 +5,9 @@ var app = express();
 var http = require('http');
 var server = http.createServer(app);
 
-var store;
-if (process.env.MONGO_URL) {
-	racer.use(require('racer-db-mongo'));
-	store = racer.createStore({
-		listen: server,
-		db: {
-			type: 'Mongo',
-			uri: process.env.MONGO_URL
-		}
-	});
-} else {
-	store = racer.createStore({
-		listen: server
-	});
-}
-
-if (process.env.VMC_APP_PORT) { // disable websockets on appfog
-	racer.io.set('transports', ['xhr-polling']);
-}
+var store = racer.createStore({
+	listen: server
+});
 
 var serverModel = store.createModel();
 serverModel.set('entries', {});
@@ -59,4 +43,4 @@ racer.js({ entry: __dirname + '/client.js' }, function (err, js) {
 
 
 
-server.listen(process.env.VMC_APP_PORT || 8081);
+server.listen(process.env.PORT || 8081);
